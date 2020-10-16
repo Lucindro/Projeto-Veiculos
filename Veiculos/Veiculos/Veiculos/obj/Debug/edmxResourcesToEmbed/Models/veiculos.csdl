@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BancoCarrosModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Carro">
+    <Key>
+      <PropertyRef Name="Id_Carro" />
+    </Key>
+    <Property Name="Id_Carro" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Modelo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Proprietario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Preco" Type="Double" Nullable="false" />
+    <NavigationProperty Name="Historico" Relationship="Self.FK_Historico_Carro" FromRole="Carro" ToRole="Historico" />
+  </EntityType>
+  <EntityType Name="Historico">
+    <Key>
+      <PropertyRef Name="Id_Historico" />
+    </Key>
+    <Property Name="Id_Historico" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DataRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Valor" Type="Double" Nullable="false" />
+    <Property Name="Id_Carro" Type="Int32" Nullable="false" />
+    <Property Name="Manutencao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Carro" Relationship="Self.FK_Historico_Carro" FromRole="Historico" ToRole="Carro" />
+  </EntityType>
+  <Association Name="FK_Historico_Carro">
+    <End Role="Carro" Type="Self.Carro" Multiplicity="1" />
+    <End Role="Historico" Type="Self.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Carro">
+        <PropertyRef Name="Id_Carro" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="Id_Carro" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BancoCarrosEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Carro" EntityType="Self.Carro" />
+    <EntitySet Name="Historico" EntityType="Self.Historico" />
+    <AssociationSet Name="FK_Historico_Carro" Association="Self.FK_Historico_Carro">
+      <End Role="Carro" EntitySet="Carro" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

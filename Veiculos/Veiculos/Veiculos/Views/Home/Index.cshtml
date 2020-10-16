@@ -1,0 +1,393 @@
+﻿<div class="dx-viewport">
+    <div class="row">
+        <div id="Title" class="col-md-4">
+            <h1>
+                title
+            </h1>
+        </div>
+        <div id="button" class="col-md-2">
+        </div>
+        <div id="graphs" class="col-md-6">
+            <h1>
+                Grafico
+            </h1>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="demo-container, col-md-6">
+            <div class="list-container">
+                <div id="listWidget"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <div id="chart-demo">
+
+                <div id="guia-graficos">
+                    <button type="button" class="btn-link" id="botao" onclick=detalhes()>Mais informações</button>
+                    <div id="chart"></div>
+                    <button type="button" class="btn-danger btn" id="botao" onclick="ocultarDiv('guia-graficos')">Fechar</button>
+                </div>
+
+            </div>
+            <div id="detalhes">
+
+                <button type="button" class="btn-link" id="botao" onclick="MaisInfo('guia-graficos','detalhes')">Ocultar Detalhes...</button>
+                <div id="tabela"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="popup"></div>
+</div>
+
+
+<style>
+    .list-container {
+        min-height: 440px;
+        height: 600px;
+        position: absolute;
+        top: 65px;
+    }
+
+    .product {
+        height: 65px;
+    }
+
+    #graphs {        
+        background-color: lightgreen;
+    }
+
+    #NomeEmpres2a {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background-color: lightgreen;
+    }
+</style>
+
+
+<script>
+    var ListaDeCarros = null;
+
+    $(function () {
+
+        ocultarDiv('guia-graficos');
+        ocultarDiv('detalhes');
+
+        $.ajax({
+            url: '@Url.Action("Get", "api/VeiculosAPI")',
+            method: 'get',
+            success: function (a, b, c) {
+                ListaDeCarros = a;
+                criaLista();
+                addButton();
+                //debugger
+            },
+            error: function (a, b, c) {
+                debugger;
+            }
+        })
+
+    });
+
+    function criaLista() {
+        $("#listWidget").dxList({
+            dataSource: ListaDeCarros,
+            height: "40%",
+            width: "100%",
+            onItemClick: function (e) {
+                alert(e);
+                Grafico();
+            },
+            itemTemplate: function (data) {
+                return $("<div>").text(data.Modelo);
+            },
+        }).dxList("instance");
+    }
+
+    function addButton() {
+        $("#button").dxButton({
+            stylingMode: "outlined",
+            icon: "add",
+            type: "normal",
+            onClick: function () {
+                criaPopup();
+            }
+        });
+    }
+
+    function criaPopup() {
+        var popup = null;
+        var popupOptions = {
+            width: 300,
+            height: 250,
+            contentTemplate: function () {
+                return $("<div class='demo-container'/>").append(
+                    $("<form action ='@Url.Action("Add", "api/VeiculosAPI")' method ='post' id='form-container'/>").append(
+                    $("<div id='form'/>").dxForm({
+                        formData: employee,
+                        items: [{
+                            itemType: "group",
+                            cssClass: "first-group",
+                            colCount: 1,
+                            items: [{
+                                itemType: "group",
+                                colSpan: 3,
+                                items: [{
+                                    dataField: "Proprietario"
+                                }, {
+                                    dataField: "Modelo"
+                                }, {
+                                    dataField: "Preco"
+                                }]
+                            }]
+                        },
+                            {
+                                itemType: "button",
+                                horizontalAlignment: "right",
+                                buttonOptions:
+                                {
+                                    text: "Register",
+                                    type: "success",
+                                    useSubmitBehavior: true
+
+                                }
+                            }
+                        ]
+                    })));
+            },
+            showTitle: true,
+            title: "Adicionar Veiculo",
+            visible: true,
+            dragEnabled: false,
+            closeOnOutsideClick: true
+        };
+
+        if (popup) {
+            popup.option("contentTemplate", popupOptions.contentTemplate.bind(this));
+        } else {
+            popup = $("#popup").dxPopup(popupOptions).dxPopup("instance");
+        }
+        popup.show();
+    }
+
+    var products = [{
+        "ID": 1,
+        "Name": "HD Video Player",
+        "Price": 330,
+        "Current_Inventory": 225,
+        "Backorder": 0,
+        "Manufacturing": 10,
+        "Category": "Video Players",
+        "ImageSrc": "images/products/1.png"
+    }, {
+        "ID": 3,
+        "Name": "SuperPlasma 50",
+        "Price": 2400,
+        "Current_Inventory": 0,
+        "Backorder": 0,
+        "Manufacturing": 0,
+        "Category": "Televisions",
+        "ImageSrc": "images/products/3.png"
+    }, {
+        "ID": 4,
+        "Name": "SuperLED 50",
+        "Price": 1600,
+        "Current_Inventory": 77,
+        "Backorder": 0,
+        "Manufacturing": 55,
+        "Category": "Televisions",
+        "ImageSrc": "images/products/4.png"
+    }, {
+        "ID": 5,
+        "Name": "SuperLED 42",
+        "Price": 1450,
+        "Current_Inventory": 445,
+        "Backorder": 0,
+        "Manufacturing": 0,
+        "Category": "Televisions",
+        "ImageSrc": "images/products/5.png"
+        }];
+
+    var employee = {
+        "ID": 1,
+        "Proprietario": "Proprietario",
+        "Modelo": "Heart",
+        "Position": "CEO",
+        "BirthDate": "1964/03/16",
+        "HireDate": "1995/01/15",
+        "Notes": "John has been in the Audio/Video industry since 1990. He has led DevAV as its CEO since 2003.\r\nWhen not working hard as the CEO, John loves to golf and bowl. He once bowled a perfect game of 300.",
+        "Address": "351 S Hill St.",
+        "City": "Los Angeles",
+        "State": "CA",
+        "Preco": "90013",
+        "Home": "555-684-1334",
+        "Mobile": "555-684-1335",
+        "Email": "jheart@dx-email.com",
+        "Skype": "jheart_DX_skype",
+    };
+
+    function Grafico() {
+        exibirDiv('guia-graficos');
+        var chart = $("#chart").dxChart({
+            palette: "Blue",
+            dataSource: datagrafico,
+            commonSeriesSettings: {
+                argumentField: "Data",
+                type: "line"
+            },
+            margin: {
+                bottom: 20
+            },
+            argumentAxis: {
+                valueMarginsEnabled: false,
+                discreteAxisDivisionMode: "crossLabels",
+                grid: {
+                    visible: true
+                }
+            },
+            series: [
+                { valueField: "Preco", name: "Valor Cobrado" },
+
+            ],
+            legend: {
+                verticalAlignment: "bottom",
+                horizontalAlignment: "center",
+                itemTextPosition: "bottom"
+            },
+            title: {
+                text: "Progressão de Gastos",
+                subtitle: {
+                    text: "(Proprietario, Modelo do Carro)"
+                }
+            },
+            "export": {
+                enabled: true
+            },
+            tooltip: {
+                enabled: true
+            }
+        }).dxChart("instance");
+
+    }
+
+    function exibirDiv(el) {
+        document.getElementById(el).style.display = 'block';
+    }
+
+    function ocultarDiv(el) {
+        document.getElementById(el).style.display = 'none';
+    }
+
+    function MaisInfo(el1, el2) {
+        var display1 = document.getElementById(el1).style.display;
+        var display2 = document.getElementById(el2).style.display;
+        if (display1 == "none") {
+            document.getElementById(el1).style.display = 'block';
+            document.getElementById(el2).style.display = 'none';
+        } else {
+            document.getElementById(el1).style.display = 'none';
+            document.getElementById(el2).style.display = 'block';
+        }
+
+    }
+
+    function detalhes() {
+
+        MaisInfo('guia-graficos', 'detalhes');
+
+        $("#tabela").dxDataGrid({
+            dataSource: employees,
+            keyExpr: "ID",
+            showBorders: true,
+            selection: {
+                mode: "single"
+            },
+            onSelectionChanged: function (e) {
+                e.component.collapseAll(-1);
+                e.component.expandRow(e.currentSelectedRowKeys[0]);
+            },
+            onContentReady: function (e) {
+                if (!e.component.getSelectedRowKeys().length)
+                    e.component.selectRowsByIndexes(0);
+            },
+            columns: [{
+                dataField: "ID",
+                caption: "Id",
+                width: 40
+            },
+
+            {
+                dataField: "Proprietario",
+                width: 120
+            },
+
+            {
+                dataField: "Modelo",
+                width: 120
+            },
+            {
+                dataField: "Data",
+                width: 120
+            }, {
+                dataField: "Valor",
+                width: 100
+            }
+
+
+            ],
+            masterDetail: {
+                enabled: false,
+                template: function (container, options) {
+                    var currentEmployeeData = options.data;
+                    container.append($('<div class="employeeInfo"><p class="employeeNotes">' + currentEmployeeData.Manutencao + '</p></div>'));
+                }
+            }
+        });
+
+
+
+
+    }
+
+    var datagrafico = [{
+        Data: "22/10/1994",
+        Preco: 1950
+    }, {
+        Data: "10/05/2000",
+        Preco: 1850.99
+    },
+    {
+        Data: "20/08/2015",
+        Preco: 52950.50
+    }
+
+    ];
+
+    var employees = [{
+        "ID": 1,
+        "Data": "22/10/2005",
+        "Valor": 1290.50,
+        "Manutencao": "Troca de Pneu"
+
+
+
+    }, {
+        "ID": 2,
+        "Data": "02/10/2008",
+        "Valor": 290.50,
+        "Manutencao": "Troca do Retrovisor"
+    }, {
+        "ID": 3,
+        "Data": "12/08/2010",
+        "Valor": 4290.50,
+        "Manutencao": "Troca dos Vidros"
+        }];
+
+</script>

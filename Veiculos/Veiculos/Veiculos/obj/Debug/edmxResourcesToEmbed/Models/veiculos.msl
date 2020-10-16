@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="BancoCarrosModelStoreContainer" CdmEntityContainer="BancoCarrosEntities">
+    <EntitySetMapping Name="Carro">
+      <EntityTypeMapping TypeName="BancoCarrosModel.Carro">
+        <MappingFragment StoreEntitySet="Carro">
+          <ScalarProperty Name="Id_Carro" ColumnName="Id_Carro" />
+          <ScalarProperty Name="Modelo" ColumnName="Modelo" />
+          <ScalarProperty Name="Proprietario" ColumnName="Proprietario" />
+          <ScalarProperty Name="Preco" ColumnName="Preco" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Historico">
+      <EntityTypeMapping TypeName="BancoCarrosModel.Historico">
+        <MappingFragment StoreEntitySet="Historico">
+          <ScalarProperty Name="Id_Historico" ColumnName="Id_Historico" />
+          <ScalarProperty Name="DataRegistro" ColumnName="DataRegistro" />
+          <ScalarProperty Name="Valor" ColumnName="Valor" />
+          <ScalarProperty Name="Id_Carro" ColumnName="Id_Carro" />
+          <ScalarProperty Name="Manutencao" ColumnName="Manutencao" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
